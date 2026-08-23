@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Vertex Design System — tokens (v1.0)
+ * Source: design/vertext-designsystem.png
+ */
+
+/*
+ * 01 · Colors.
+ * Primary is the sheet's orange ramp; neutral is the sheet's slate ramp
+ * (neutral-50 per the sheet, not Tailwind's). Steps marked "inferred" are
+ * not on the sheet — they fill the ramp from Tailwind's orange/slate so
+ * utilities like hover shades stay within the system.
+ */
+@theme {
+  --color-primary-50: #fff7ed; /* inferred (Tailwind orange-50) */
+  --color-primary-100: #ffeee5;
+  --color-primary-200: #fed7aa;
+  --color-primary-300: #fdba74;
+  --color-primary-400: #fb923c;
+  --color-primary-500: #f97316;
+  --color-primary-600: #ea580c; /* inferred hover shade of primary-500 */
+
+  --color-neutral-50: #fafafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8; /* inferred (Tailwind slate-400) */
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569; /* inferred (Tailwind slate-600) */
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b; /* inferred (Tailwind slate-800) */
+  --color-neutral-900: #0f172a;
 }
 
+/*
+ * 02 · Typography. Playfair Display for display/headings, Inter for UI.
+ * Variables come from next/font in app/layout.tsx.
+ * 04 · Spacing uses Tailwind's default 4px base — no override needed.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  /* 03 · Type scale — size / line-height / weight */
+  --text-display-1: 3rem; /* 48/56 · Bold · Page titles (Playfair) */
+  --text-display-1--line-height: 3.5rem;
+  --text-display-1--font-weight: 700;
+  --text-display-2: 2.25rem; /* 36/44 · Bold · Section titles (Playfair) */
+  --text-display-2--line-height: 2.75rem;
+  --text-display-2--font-weight: 700;
+  --text-h1: 1.75rem; /* 28/36 · Semi Bold · Card titles */
+  --text-h1--line-height: 2.25rem;
+  --text-h1--font-weight: 600;
+  --text-h2: 1.375rem; /* 22/30 · Semi Bold · Sub section */
+  --text-h2--line-height: 1.875rem;
+  --text-h2--font-weight: 600;
+  --text-h3: 1.125rem; /* 18/24 · Medium · Small titles */
+  --text-h3--line-height: 1.5rem;
+  --text-h3--font-weight: 500;
+  --text-body-lg: 1rem; /* 16/24 · Regular · Body copy */
+  --text-body-lg--line-height: 1.5rem;
+  --text-body: 0.875rem; /* 14/20 · Regular · Supporting text */
+  --text-body--line-height: 1.25rem;
+  --text-small: 0.75rem; /* 12/16 · Regular · Captions, meta */
+  --text-small--line-height: 1rem;
+
+  /* 05 · Radius */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* 05 · Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.08);
+  --shadow-lg: 0 12px 24px -4px rgb(15 23 42 / 0.1);
+  --shadow-xl: 0 20px 40px -8px rgb(15 23 42 / 0.12);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-neutral-50);
+  color: var(--color-neutral-900);
 }
