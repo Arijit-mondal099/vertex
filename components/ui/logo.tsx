@@ -16,7 +16,7 @@ export function Logo({
       <svg
         viewBox="0 0 24 24"
         aria-hidden="true"
-        className="size-7 shrink-0"
+        className="size-9 shrink-0"
       >
         <defs>
           <linearGradient
@@ -27,8 +27,8 @@ export function Logo({
             y2="22"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stopColor="#FB923C" />
-            <stop offset="1" stopColor="#F97316" />
+            <stop stopColor="#F5876A" />
+            <stop offset="1" stopColor="#E85A34" />
           </linearGradient>
         </defs>
         <path
@@ -37,7 +37,7 @@ export function Logo({
         />
       </svg>
       {wordmark && (
-        <span className="text-body-lg font-semibold tracking-tight text-neutral-900">
+        <span className="text-xl mt-0.5 font-semibold tracking-tight text-neutral-900">
           Vertex
         </span>
       )}
