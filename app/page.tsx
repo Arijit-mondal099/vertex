@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import { Icon } from "@/components/ui/icon";
 import { Logo } from "@/components/ui/logo";
 
@@ -184,20 +185,34 @@ export default function Home() {
               </ul>
             </div>
             <div className="flex shrink-0 items-center gap-3 sm:gap-5">
-              <button
-                type="button"
-                aria-label="Notifications"
-                className="text-[#413f3f] transition-colors hover:text-neutral-950"
-              >
-                <Icon name="bell" className="size-6" />
-              </button>
-              <button
-                type="button"
-                aria-label="Account"
-                className="flex size-12 items-center justify-center overflow-hidden rounded-full bg-[#f7ece6] ring-1 ring-[#f3e8e1]"
-              >
-                <Icon name="user" filled className="size-6 text-[#bc7c5e]" />
-              </button>
+              <Show when="signed-out">
+                <SignInButton>
+                  <button
+                    type="button"
+                    className="text-[0.9375rem] font-medium text-neutral-950 transition-colors hover:text-[#e54b21]"
+                  >
+                    Sign in
+                  </button>
+                </SignInButton>
+                <SignUpButton>
+                  <button
+                    type="button"
+                    className="inline-flex h-11 items-center rounded-[10px] bg-[#e66b50] px-5 text-[0.9375rem] font-medium text-white shadow-[0_4px_12px_-2px_rgba(230,107,80,0.35)] transition-colors hover:bg-[#d95a3f]"
+                  >
+                    Get started
+                  </button>
+                </SignUpButton>
+              </Show>
+              <Show when="signed-in">
+                <button
+                  type="button"
+                  aria-label="Notifications"
+                  className="text-[#413f3f] transition-colors hover:text-neutral-950"
+                >
+                  <Icon name="bell" className="size-6" />
+                </button>
+                <UserButton />
+              </Show>
             </div>
           </div>
         </header>
