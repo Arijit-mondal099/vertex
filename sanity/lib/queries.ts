@@ -1,0 +1,110 @@
+import {defineQuery} from 'next-sanity'
+
+/**
+ * GROQ queries for the content layer. Every query is wrapped in defineQuery
+ * so Sanity TypeGen can generate result types from them later.
+ *
+ * Conventions: tight projections at every level, references expanded once
+ * with `->`, optimizable filters only (`_type`, `slug.current`, `_ref`),
+ * order before slice. Lesson/module list items are keyed by `_id` (stable)
+ * since reference `_key`s are lost through dereferencing.
+ */
+
+const IMAGE_PROJECTION = /* groq */ `{
+  _type,
+  asset,
+  alt,
+}`
+
+const INSTRUCTOR_PROJECTION = /* groq */ `{
+  _id,
+  name,
+  role,
+  "avatar": avatar ${IMAGE_PROJECTION},
+  bio,
+}`
+
+const CATEGORY_PROJECTION = /* groq */ `{
+  _id,
+  title,
+  "slug": slug.current,
+}`
+
+/** Card/list shape for catalog grids and search results. */
+export const COURSES_LIST_QUERY = defineQuery(/* groq */ `
+  *[_type == "course"] | order(_createdAt desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    description,
+    level,
+    "image": image ${IMAGE_PROJECTION},
+    "instructors": instructors[]-> ${INSTRUCTOR_PROJECTION},
+    "categories": categories[]-> ${CATEGORY_PROJECTION},
+    "moduleCount": count(modules),
+    "lessonCount": count(modules[]->lessons[]),
+    "totalMinutes": coalesce(math::sum(modules[]->lessons[]->duration), 0),
+  }
+`)
+
+/** Full course page payload; `modules` preserves curriculum order. */
+export const COURSE_BY_SLUG_QUERY = defineQuery(/* groq */ `
+  *[_type == "course" && slug.current == $slug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    description,
+    level,
+    "image": image ${IMAGE_PROJECTION},
+    "instructors": instructors[]-> ${INSTRUCTOR_PROJECTION},
+    "categories": categories[]-> ${CATEGORY_PROJECTION},
+    "modules": modules[]-> {
+      _id,
+      title,
+      description,
+      "lessons": lessons[]-> {
+        _id,
+        title,
+        "slug": slug.current,
+        duration,
+      },
+    },
+  }
+`)
+
+/** Lesson page payload, including the parent course for breadcrumbs. */
+export const LESSON_BY_SLUG_QUERY = defineQuery(/* groq */ `
+  *[_type == "lesson" && slug.current == $slug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    duration,
+    videoUrl,
+    content,
+    "course": *[_type == "course" && references(^._id)][0] {
+      title,
+      "slug": slug.current,
+    },
+  }
+`)
+
+export const CATEGORIES_QUERY = defineQuery(/* groq */ `
+  *[_type == "category"] | order(title asc) {
+    _id,
+    title,
+    "slug": slug.current,
+    description,
+    "courseCount": count(*[_type == "course" && references(^._id)]),
+  }
+`)
+
+export const INSTRUCTORS_QUERY = defineQuery(/* groq */ `
+  *[_type == "instructor"] | order(name asc) {
+    _id,
+    name,
+    role,
+    "avatar": avatar ${IMAGE_PROJECTION},
+    bio,
+    "courseCount": count(*[_type == "course" && references(^._id)]),
+  }
+`)
