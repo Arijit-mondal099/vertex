@@ -1,69 +1,288 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { Icon } from "@/components/ui/icon";
+import { Logo } from "@/components/ui/logo";
+
+export const metadata: Metadata = {
+  title: "Vertex — Intelligent Learning",
+  description:
+    "Vertex understands what you want to learn and finds the exact lessons across all your courses.",
+};
+
+/* ------------------------------------------------------------- course data */
+
+/**
+ * Presentational content for the home page, matching the reference design.
+ * The catalog becomes Sanity-backed when that work lands.
+ */
+type Course = {
+  title: string;
+  description: string;
+  level: string;
+  duration: string;
+  modules: string;
+  icon: ReactNode;
+};
+
+/** Docker whale mark (simple-icons, CC0). */
+function DockerMark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z" />
+    </svg>
+  );
+}
+
+const COURSES: Course[] = [
+  {
+    title: "Next.js for Production",
+    description:
+      "Build scalable, high-performance web applications with Next.js.",
+    level: "Intermediate",
+    duration: "18h 24m",
+    modules: "12 modules",
+    icon: (
+      <div className="flex size-16 items-center justify-center rounded-xl bg-neutral-900">
+        <span className="text-[1.75rem] font-bold leading-none text-white">
+          N
+        </span>
+      </div>
+    ),
+  },
+  {
+    title: "Docker Essentials",
+    description:
+      "Containerize applications and streamline your development workflow.",
+    level: "Beginner",
+    duration: "10h 12m",
+    modules: "8 modules",
+    icon: <DockerMark className="size-16 text-[#3793ec]" />,
+  },
+  {
+    title: "TypeScript Deep Dive",
+    description: "Go beyond the basics and write safer, more expressive code.",
+    level: "Intermediate",
+    duration: "14h 36m",
+    modules: "10 modules",
+    icon: (
+      <div className="flex size-16 items-center justify-center rounded-xl bg-[#3f7dce]">
+        <span className="text-[1.375rem] font-bold leading-none text-white">
+          TS
+        </span>
+      </div>
+    ),
+  },
+];
+
+/**
+ * Decorative footer bars, traced from the reference: two clusters separated by
+ * a gap, bars touching within a cluster. Pairs are [width %, height %] of the
+ * bars row; the gap between clusters is ~10.6% of the row width.
+ */
+const BAR_LEFT = [
+  [7.4, 48],
+  [6.3, 65],
+  [4.0, 79],
+  [5.8, 97],
+  [9.3, 69],
+  [5.3, 50],
+] as const;
+const BAR_RIGHT = [
+  [3.2, 35],
+  [9.2, 45],
+  [7.4, 59],
+  [6.2, 79],
+  [5.5, 97],
+  [5.1, 57],
+  [3.9, 68],
+  [5.3, 80],
+  [5.3, 87],
+] as const;
+
+function FooterBar({ w, h }: { w: number; h: number }) {
+  return (
+    <div
+      className="bg-linear-to-b from-transparent via-[#fda98c] via-60% to-[#fdbea5]"
+      style={{ width: `${w}%`, height: `${h}%` }}
+    />
+  );
+}
+
+/* -------------------------------------------------------------- components */
+
+function CourseCard({
+  title,
+  description,
+  level,
+  duration,
+  modules,
+  icon,
+}: Course) {
+  return (
+    <div className="flex flex-col rounded-md border border-[#f3e8e1] bg-[#fefcfb] p-6 pb-8 shadow-[0_2px_12px_-2px_rgba(232,90,52,0.08)]">
+      {icon}
+      <h3 className="mt-12 font-display text-[1.25rem] font-bold leading-7 text-black">
+        {title}
+      </h3>
+      <p className="mt-6 pb-10 text-body leading-6 text-[#4b4f57]">
+        {description}
+      </p>
+      <div className="mt-auto -mx-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-[#f3e8e1] pt-6 text-[0.625rem] leading-4 tracking-tight text-[#696973]">
+        <span className="inline-flex items-center gap-1.5">
+          <Icon name="bar-chart" className="size-4" />
+          {level}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Icon name="clock" className="size-4" />
+          {duration}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Icon name="file-text" className="size-4" />
+          {modules}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------- page */
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <div className="flex-1 bg-[#fbf8f5] bg-[repeating-linear-gradient(45deg,transparent_0px,transparent_8.2px,#f3e9e1_8.2px,#f3e9e1_9.2px)]">
+      <div className="mx-auto w-[94%] max-w-360 border-x border-[#f4ede8] bg-[#fbf8f5]">
+        {/* Navbar */}
+        <header className="border-b border-[#f2eae5]">
+          <div className="flex h-24 items-center px-6 lg:px-14">
+            <div className="flex min-w-0 flex-1 items-center gap-10">
+              <Link href="/" aria-label="Vertex home">
+                <Logo />
+              </Link>
+              <ul className="hidden items-center gap-7 sm:flex">
+                <li>
+                  <a
+                    href="#"
+                    className="text-[0.9375rem] font-medium text-neutral-950 transition-colors hover:text-[#e54b21]"
+                  >
+                    Courses
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-[0.9375rem] font-medium text-neutral-950 transition-colors hover:text-[#e54b21]"
+                  >
+                    My Learning
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div className="flex shrink-0 items-center gap-3 sm:gap-5">
+              <button
+                type="button"
+                aria-label="Notifications"
+                className="text-[#413f3f] transition-colors hover:text-neutral-950"
+              >
+                <Icon name="bell" className="size-6" />
+              </button>
+              <button
+                type="button"
+                aria-label="Account"
+                className="flex size-12 items-center justify-center overflow-hidden rounded-full bg-[#f7ece6] ring-1 ring-[#f3e8e1]"
+              >
+                <Icon name="user" filled className="size-6 text-[#bc7c5e]" />
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* Hero */}
+        <section className="px-6 pb-14 pt-18 text-center">
+          <span className="mx-auto flex w-fit items-center rounded-lg bg-[#f7ece6] px-4 py-2 text-small font-semibold uppercase tracking-widest text-[#e54b21]">
+            Intelligent Learning
+          </span>
+          <h1 className="mx-auto mt-7 max-w-2xl text-balance font-display text-[2.5rem] font-bold leading-[1.2] text-black sm:text-[3rem] lg:text-[4rem]">
+            Search your learning in plain English.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mx-auto mt-6 max-w-[30rem] text-[1.25rem] leading-8 text-[#38414d]">
+            Vertex understands what you want to learn and finds the exact
+            lessons across all your courses.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+          <div className="mt-10">
+            <a
+              href="#"
+              className="inline-flex h-[52px] items-center gap-2.5 rounded-[10px] bg-[#e66b50] px-6 text-[1.0625rem] font-medium text-white shadow-[0_4px_12px_-2px_rgba(230,107,80,0.35)] transition-colors hover:bg-[#d95a3f]"
+            >
+              Explore Courses
+              <Icon name="arrow-right" className="size-5" />
+            </a>
+          </div>
+          <div className="relative mx-auto mt-12 flex h-20 w-[87.5%] items-center rounded-2xl border border-[#f3eae5] bg-[#fdfcfb] shadow-[0_10px_28px_-12px_rgba(232,90,52,0.16)]">
+            <Icon
+              name="search"
+              className="pointer-events-none absolute left-7 size-6 text-neutral-400"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <input
+              type="search"
+              placeholder="Ask anything about your learning..."
+              aria-label="Search your learning"
+              className="h-full w-full rounded-2xl bg-transparent pl-[4.25rem] pr-6 text-[1.1875rem] text-neutral-900 outline-none placeholder:text-neutral-400 sm:pr-28"
+            />
+            <kbd className="absolute right-6 hidden h-9 items-center rounded-md border border-[#f1e8e0] bg-white px-3 text-body text-[#696973] sm:inline-flex">
+              ⌘ K
+            </kbd>
+          </div>
+        </section>
+
+        {/* Hero / courses hairline */}
+        <div className="h-px bg-[#f5ede7]" />
+
+        {/* All Courses */}
+        <section className="px-6 pb-6 pt-11 lg:px-14">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <h2 className="font-display text-display-2 text-black">
+              All Courses
+            </h2>
+            <a
+              href="#"
+              className="inline-flex items-center gap-2 text-[0.9375rem] font-medium text-[#e54b21] transition-colors hover:text-[#d43e15]"
+            >
+              View all courses
+              <Icon name="arrow-right" className="size-4" />
+            </a>
+          </div>
+          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {COURSES.map((course) => (
+              <CourseCard key={course.title} {...course} />
+            ))}
+          </div>
+          <div className="mt-18 flex items-center gap-4 lg:gap-6">
+            <div className="h-px flex-1 bg-[#f4ede8]" />
+            <p className="flex items-center gap-3 text-body-lg text-[#333439]">
+              <Icon name="star" className="size-6 text-[#f45f33]" />
+              New courses and lessons added every week.
+            </p>
+            <div className="h-px flex-1 bg-[#f4ede8]" />
+          </div>
+        </section>
+
+        {/* Decorative footer bars */}
+        <div aria-hidden="true" className="flex h-44 items-end sm:h-52 lg:h-60">
+          {BAR_LEFT.map(([w, h], i) => (
+            <FooterBar key={`l${i}`} w={w} h={h} />
+          ))}
+          <div className="shrink-0" style={{ width: "10.6%" }} />
+          {BAR_RIGHT.map(([w, h], i) => (
+            <FooterBar key={`r${i}`} w={w} h={h} />
+          ))}
         </div>
-      </main>
+      </div>
     </div>
   );
 }
