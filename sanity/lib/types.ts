@@ -83,6 +83,15 @@ export interface CourseDetail extends Omit<CourseCard, 'moduleCount' | 'lessonCo
   totalSeconds?: number
 }
 
+export interface Resource {
+  _key?: string
+  _type?: string
+  type?: string
+  title: string
+  description?: string
+  url?: string
+}
+
 /** Lesson page payload, including the parent course for breadcrumbs. */
 export interface LessonDetail {
   _id: string
@@ -90,8 +99,27 @@ export interface LessonDetail {
   slug: string
   duration?: number
   videoUrl?: string
+  thumbnail?: SanityImage
+  freePreview?: boolean
+  studentCount?: number
+  notes?: PortableTextBlock[]
   content?: PortableTextBlock[]
+  keyPoints?: string[]
+  proTip?: string
+  resources?: Resource[]
   course?: {title: string; slug: string}
+}
+
+/** Lesson with full parent course and modules for lesson page. */
+export interface LessonWithCourse extends Omit<LessonDetail, 'course'> {
+  course?: {
+    _id: string
+    title: string
+    slug: string
+    level?: string
+    studentCount?: number
+    modules: ModuleWithLessons[]
+  }
 }
 
 export interface Category extends CategorySummary {
