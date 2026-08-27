@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
  */
 export type IconName =
   | "accessibility"
+  | "arrow-left"
   | "arrow-right"
   | "bar-chart"
   | "bell"
@@ -17,6 +18,7 @@ export type IconName =
   | "chevron-down"
   | "chevron-left"
   | "chevron-right"
+  | "chevron-up"
   | "clock"
   | "cloud"
   | "code"
@@ -28,6 +30,7 @@ export type IconName =
   | "gauge"
   | "grid"
   | "layers"
+  | "lightbulb"
   | "loader"
   | "lock"
   | "play-circle"
@@ -50,6 +53,12 @@ const STROKE: Record<IconName, ReactNode> = {
       <path d="m5 8 3-3 5.5 3-2.36 3.5" />
       <path d="M4.24 14.5a5 5 0 0 0 6.88 6" />
       <path d="M13.76 17.5a5 5 0 0 0-6.88-6" />
+    </>
+  ),
+  "arrow-left": (
+    <>
+      <path d="M19 12H5" />
+      <path d="m12 19-7-7 7-7" />
     </>
   ),
   "arrow-right": (
@@ -86,6 +95,7 @@ const STROKE: Record<IconName, ReactNode> = {
   "chevron-down": <path d="m6 9 6 6 6-6" />,
   "chevron-left": <path d="m15 18-6-6 6-6" />,
   "chevron-right": <path d="m9 18 6-6-6-6" />,
+  "chevron-up": <path d="m18 15-6-6-6 6" />,
   clock: (
     <>
       <circle cx="12" cy="12" r="10" />
@@ -112,6 +122,15 @@ const STROKE: Record<IconName, ReactNode> = {
       <path d="M16 13H8" />
       <path d="M16 17H8" />
       <path d="M10 9H8" />
+    </>
+  ),
+  lightbulb: (
+    <>
+      <path d="M9 21h6" />
+      <path d="M12 17a5 5 0 0 0 5-5c0-2-1.5-3.5-3-4.5a5 5 0 0 0-4 0C8.5 8.5 7 10 7 12a5 5 0 0 0 5 5Z" />
+      <path d="M12 17v4" />
+      <path d="M9 10h.01" />
+      <path d="M15 10h.01" />
     </>
   ),
   folder: (
