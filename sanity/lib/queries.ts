@@ -19,9 +19,11 @@ const IMAGE_PROJECTION = /* groq */ `{
 const INSTRUCTOR_PROJECTION = /* groq */ `{
   _id,
   name,
-  role,
-  "avatar": avatar ${IMAGE_PROJECTION},
+  "role": coalesce(role, expertise[0]),
+  "avatar": coalesce(photo, avatar) ${IMAGE_PROJECTION},
   bio,
+  expertise,
+  "slug": slug.current,
 }`
 
 const CATEGORY_PROJECTION = /* groq */ `{
@@ -36,39 +38,59 @@ export const COURSES_LIST_QUERY = defineQuery(/* groq */ `
     _id,
     title,
     "slug": slug.current,
-    description,
+    "description": coalesce(summary, description),
     level,
-    "image": image ${IMAGE_PROJECTION},
-    "instructors": instructors[]-> ${INSTRUCTOR_PROJECTION},
-    "categories": categories[]-> ${CATEGORY_PROJECTION},
+    price,
+    popular,
+    studentCount,
+    "image": coalesce(coverImage, image) ${IMAGE_PROJECTION},
+    "instructor": instructor-> ${INSTRUCTOR_PROJECTION},
+    "category": category-> ${CATEGORY_PROJECTION},
+    // Backward compat: expose arrays for old consumers
+    "instructors": coalesce([instructor-> ${INSTRUCTOR_PROJECTION}], instructors[]-> ${INSTRUCTOR_PROJECTION}, []),
+    "categories": coalesce([category-> ${CATEGORY_PROJECTION}], categories[]-> ${CATEGORY_PROJECTION}, []),
     "moduleCount": count(modules),
-    "lessonCount": count(modules[]->lessons[]),
-    "totalMinutes": coalesce(math::sum(modules[]->lessons[]->duration), 0),
+    "lessonCount": count(modules[].lessons[]),
+    "totalMinutes": coalesce(math::sum(modules[].lessons[]->duration), 0),
+    "totalSeconds": coalesce(math::sum(modules[].lessons[]->duration), 0),
+    learningOutcomes,
   }
 `)
 
-/** Full course page payload; `modules` preserves curriculum order. */
+/** Full course page payload; `modules` preserves curriculum order (embedded). */
 export const COURSE_BY_SLUG_QUERY = defineQuery(/* groq */ `
   *[_type == "course" && slug.current == $slug][0] {
     _id,
     title,
     "slug": slug.current,
-    description,
+    "description": coalesce(summary, description),
+    summary,
     level,
-    "image": image ${IMAGE_PROJECTION},
-    "instructors": instructors[]-> ${INSTRUCTOR_PROJECTION},
-    "categories": categories[]-> ${CATEGORY_PROJECTION},
-    "modules": modules[]-> {
-      _id,
+    price,
+    popular,
+    studentCount,
+    learningOutcomes,
+    "image": coalesce(coverImage, image) ${IMAGE_PROJECTION},
+    "coverImage": coalesce(coverImage, image) ${IMAGE_PROJECTION},
+    "instructor": instructor-> ${INSTRUCTOR_PROJECTION},
+    "category": category-> ${CATEGORY_PROJECTION},
+    "instructors": coalesce([instructor-> ${INSTRUCTOR_PROJECTION}], instructors[]-> ${INSTRUCTOR_PROJECTION}, []),
+    "categories": coalesce([category-> ${CATEGORY_PROJECTION}], categories[]-> ${CATEGORY_PROJECTION}, []),
+    "modules": modules[] {
+      _key,
       title,
-      description,
+      "summary": coalesce(summary, description),
       "lessons": lessons[]-> {
         _id,
         title,
         "slug": slug.current,
         duration,
+        thumbnail ${IMAGE_PROJECTION},
+        freePreview,
       },
     },
+    "lessonCount": count(modules[].lessons[]),
+    "totalMinutes": coalesce(math::sum(modules[].lessons[]->duration), 0),
   }
 `)
 
@@ -80,8 +102,16 @@ export const LESSON_BY_SLUG_QUERY = defineQuery(/* groq */ `
     "slug": slug.current,
     duration,
     videoUrl,
+    thumbnail ${IMAGE_PROJECTION},
+    freePreview,
+    studentCount,
+    notes,
     content,
+    keyPoints,
+    proTip,
+    resources,
     "course": *[_type == "course" && references(^._id)][0] {
+      _id,
       title,
       "slug": slug.current,
     },

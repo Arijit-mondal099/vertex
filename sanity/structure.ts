@@ -6,8 +6,6 @@ export const structure: StructureResolver = (S) =>
     .title('Vertex')
     .items([
       S.documentTypeListItem('course').title('Courses'),
-      S.divider(),
-      S.documentTypeListItem('module').title('Modules'),
       S.documentTypeListItem('lesson').title('Lessons'),
       S.divider(),
       S.documentTypeListItem('instructor').title('Instructors'),
