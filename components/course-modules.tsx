@@ -13,7 +13,7 @@ function formatDuration(seconds: number): string {
   return `${m}m`;
 }
 
-export function CourseModules({ modules }: { modules: ModuleWithLessons[] }) {
+export function CourseModules({ modules, courseSlug }: { modules: ModuleWithLessons[]; courseSlug?: string }) {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [showAll, setShowAll] = useState(false);
 
@@ -70,7 +70,7 @@ export function CourseModules({ modules }: { modules: ModuleWithLessons[] }) {
                   {mod.lessons.map((lesson, li) => (
                     <a
                       key={lesson._id}
-                      href="#"
+                      href={courseSlug ? `/courses/${courseSlug}/${lesson.slug}` : "#"}
                       className="flex items-center justify-between gap-4 border-b border-[#f3e8e1] px-5 py-3.5 last:border-b-0 hover:bg-white transition-colors"
                     >
                       <span className="flex min-w-0 items-center gap-3">

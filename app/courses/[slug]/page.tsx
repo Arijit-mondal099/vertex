@@ -119,7 +119,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
   // first lesson for Continue Learning
   const firstLesson = course.modules?.[0]?.lessons?.[0];
-  const continueHref = firstLesson ? `/courses/${course.slug}` : "#";
+  const continueHref = firstLesson ? `/courses/${course.slug}/${firstLesson.slug}` : "#";
 
   return (
     <div className="flex-1 bg-[#fbf8f5] bg-[repeating-linear-gradient(45deg,transparent_0px,transparent_8.2px,#f3e9e1_8.2px,#f3e9e1_9.2px)]">
@@ -205,6 +205,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
           {/* Cover */}
           <div className="overflow-hidden rounded-2xl bg-neutral-900 shadow-sm aspect-square lg:aspect-square">
             {coverImageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={coverImageUrl}
                 alt={course.coverImage?.alt ?? `Cover for ${course.title}`}
@@ -310,7 +311,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             </p>
           </div>
           <div className="mt-4">
-            <CourseModules modules={course.modules ?? []} />
+            <CourseModules modules={course.modules ?? []} courseSlug={course.slug} />
           </div>
         </section>
 
