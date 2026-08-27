@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import { Icon } from "@/components/ui/icon";
 import { Logo } from "@/components/ui/logo";
+import { getCourses } from "@/sanity/lib/data";
 
 export const metadata: Metadata = {
   title: "Vertex — Intelligent Learning",
@@ -11,12 +12,28 @@ export const metadata: Metadata = {
     "Vertex understands what you want to learn and finds the exact lessons across all your courses.",
 };
 
-/* ------------------------------------------------------------- course data */
+/* ------------------------------------------------------------- helpers */
 
-/**
- * Presentational content for the home page, matching the reference design.
- * The catalog becomes Sanity-backed when that work lands.
- */
+function formatDuration(totalSeconds: number): string {
+  if (!totalSeconds) return "—";
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.round((totalSeconds % 3600) / 60);
+  let hours = h;
+  let mins = m;
+  if (mins === 60) {
+    hours += 1;
+    mins = 0;
+  }
+  if (hours > 0 && mins > 0) return `${hours}h ${mins}m`;
+  if (hours > 0) return `${hours}h`;
+  return `${mins}m`;
+}
+
+function capitalize(s?: string): string {
+  if (!s) return "";
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 type Course = {
   title: string;
   description: string;
@@ -40,46 +57,32 @@ function DockerMark({ className }: { className?: string }) {
   );
 }
 
-const COURSES: Course[] = [
-  {
-    title: "Next.js for Production",
-    description:
-      "Build scalable, high-performance web applications with Next.js.",
-    level: "Intermediate",
-    duration: "18h 24m",
-    modules: "12 modules",
-    icon: (
-      <div className="flex size-16 items-center justify-center rounded-xl bg-neutral-900">
-        <span className="text-[1.75rem] font-bold leading-none text-white">
-          N
-        </span>
-      </div>
-    ),
-  },
-  {
-    title: "Docker Essentials",
-    description:
-      "Containerize applications and streamline your development workflow.",
-    level: "Beginner",
-    duration: "10h 12m",
-    modules: "8 modules",
-    icon: <DockerMark className="size-16 text-[#3793ec]" />,
-  },
-  {
-    title: "TypeScript Deep Dive",
-    description: "Go beyond the basics and write safer, more expressive code.",
-    level: "Intermediate",
-    duration: "14h 36m",
-    modules: "10 modules",
-    icon: (
+function CourseTile({ title, slug }: { title: string; slug: string }) {
+  const key = `${title} ${slug}`.toLowerCase();
+  if (key.includes("docker") || key.includes("devops")) {
+    return <DockerMark className="size-16 text-[#3793ec]" />;
+  }
+  if (key.includes("typescript")) {
+    return (
       <div className="flex size-16 items-center justify-center rounded-xl bg-[#3f7dce]">
-        <span className="text-[1.375rem] font-bold leading-none text-white">
-          TS
-        </span>
+        <span className="text-[1.375rem] font-bold leading-none text-white">TS</span>
       </div>
-    ),
-  },
-];
+    );
+  }
+  if (key.includes("next.js") || key.includes("nextjs")) {
+    return (
+      <div className="flex size-16 items-center justify-center rounded-xl bg-neutral-900">
+        <span className="text-[1.75rem] font-bold leading-none text-white">N</span>
+      </div>
+    );
+  }
+  const letter = title.trim().charAt(0).toUpperCase() || "V";
+  return (
+    <div className="flex size-16 items-center justify-center rounded-xl bg-neutral-900">
+      <span className="text-[1.75rem] font-bold leading-none text-white">{letter}</span>
+    </div>
+  );
+}
 
 /**
  * Decorative footer bars, traced from the reference: two clusters separated by
@@ -154,7 +157,9 @@ function CourseCard({
 
 /* -------------------------------------------------------------------- page */
 
-export default function Home() {
+export default async function Home() {
+  const courses = await getCourses().catch(() => []);
+  const topCourses = [...courses].sort((a, b) => (b.studentCount ?? 0) - (a.studentCount ?? 0)).slice(0, 3);
   return (
     <div className="flex-1 bg-[#fbf8f5] bg-[repeating-linear-gradient(45deg,transparent_0px,transparent_8.2px,#f3e9e1_8.2px,#f3e9e1_9.2px)]">
       <div className="mx-auto w-[94%] max-w-360 border-x border-[#f4ede8] bg-[#fbf8f5]">
@@ -167,12 +172,12 @@ export default function Home() {
               </Link>
               <ul className="hidden items-center gap-7 sm:flex">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/courses"
                     className="text-[0.9375rem] font-medium text-neutral-950 transition-colors hover:text-[#e54b21]"
                   >
                     Courses
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a
@@ -264,18 +269,41 @@ export default function Home() {
             <h2 className="font-display text-display-2 text-black">
               All Courses
             </h2>
-            <a
-              href="#"
+            <Link
+              href="/courses"
               className="inline-flex items-center gap-2 text-[0.9375rem] font-medium text-[#e54b21] transition-colors hover:text-[#d43e15]"
             >
               View all courses
               <Icon name="arrow-right" className="size-4" />
-            </a>
+            </Link>
           </div>
           <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {COURSES.map((course) => (
-              <CourseCard key={course.title} {...course} />
-            ))}
+            {topCourses.length > 0 ? (
+              topCourses.map((course) => {
+                const duration = formatDuration(course.totalSeconds ?? course.totalMinutes ?? 0);
+                const modulesLabel = `${course.moduleCount} ${course.moduleCount === 1 ? "module" : "modules"}`;
+                return (
+                  <Link
+                    key={course._id}
+                    href={`/courses/${course.slug}`}
+                    className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400 rounded-md"
+                  >
+                    <CourseCard
+                      title={course.title}
+                      description={course.description}
+                      level={capitalize(course.level)}
+                      duration={duration}
+                      modules={modulesLabel}
+                      icon={<CourseTile title={course.title} slug={course.slug} />}
+                    />
+                  </Link>
+                );
+              })
+            ) : (
+              <p className="col-span-full py-8 text-center text-body text-neutral-500">
+                No courses available yet.
+              </p>
+            )}
           </div>
           <div className="mt-18 flex items-center gap-4 lg:gap-6">
             <div className="h-px flex-1 bg-[#f4ede8]" />

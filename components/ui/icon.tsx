@@ -11,24 +11,36 @@ export type IconName =
   | "arrow-right"
   | "bar-chart"
   | "bell"
+  | "bookmark"
   | "book-open"
   | "check-circle"
   | "chevron-down"
   | "chevron-left"
   | "chevron-right"
   | "clock"
+  | "cloud"
+  | "code"
+  | "database"
   | "eye"
   | "external-link"
   | "file-text"
   | "folder"
+  | "gauge"
   | "grid"
+  | "layers"
   | "loader"
   | "lock"
   | "play-circle"
+  | "puzzle"
+  | "rocket"
   | "search"
+  | "shield"
+  | "sparkles"
   | "star"
   | "target"
-  | "user";
+  | "users"
+  | "user"
+  | "workflow";
 
 const STROKE: Record<IconName, ReactNode> = {
   accessibility: (
@@ -140,6 +152,84 @@ const STROKE: Record<IconName, ReactNode> = {
       <circle cx="12" cy="12" r="10" />
       <circle cx="12" cy="12" r="6" />
       <circle cx="12" cy="12" r="2" />
+    </>
+  ),
+  bookmark: <path d="M19 21 12 17 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z" />,
+  cloud: (
+    <>
+      <path d="M17.5 19a3.5 3.5 0 0 0 .5-7 5 5 0 0 0-9.5-1 3.5 3.5 0 0 0-1 6.5" />
+      <path d="M17 19H7" />
+    </>
+  ),
+  code: (
+    <>
+      <path d="m8 16-4-4 4-4" />
+      <path d="m16 16 4-4-4-4" />
+    </>
+  ),
+  database: (
+    <>
+      <ellipse cx="12" cy="5" rx="8" ry="3" />
+      <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5" />
+      <path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />
+    </>
+  ),
+  gauge: (
+    <>
+      <path d="M12 20a8 8 0 1 0-8-8 8 8 0 0 0 8 8Z" />
+      <path d="M12 12 16 8" />
+      <path d="M8 12h.01" />
+      <path d="M12 8h.01" />
+      <path d="M16 12h.01" />
+    </>
+  ),
+  layers: (
+    <>
+      <path d="M12 2 3 7l9 5 9-5Z" />
+      <path d="M3 12 12 17l9-5" />
+      <path d="M3 17 12 22l9-5" />
+    </>
+  ),
+  puzzle: (
+    <>
+      <path d="M14 7h2a2 2 0 0 1 2 2v2" />
+      <path d="M14 17h2a2 2 0 0 0 2-2v-2" />
+      <path d="M10 7H8a2 2 0 0 0-2 2v2" />
+      <path d="M10 17H8a2 2 0 0 0-2-2v-2a2 2 0 0 1 2-2h2" />
+      <path d="M12 7v3a1 1 0 0 0 1 1h3" />
+    </>
+  ),
+  rocket: (
+    <>
+      <path d="M4.5 16.5 9 11l5 5-4.5 4.5a2.5 2.5 0 0 1-3.5 0 2.5 2.5 0 0 1 0-3.5Z" />
+      <path d="M9 11 14 6a4 4 0 0 1 5.5 5.5L14 16" />
+      <path d="M14 6 9 11" />
+      <circle cx="13" cy="11" r="1" />
+    </>
+  ),
+  shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />,
+  sparkles: (
+    <>
+      <path d="M12 3 13.5 8.5 19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5Z" />
+      <path d="M19 14 19.5 15.5 21 16l-1.5.5L19 18l-.5-1.5L17 16l1.5-.5Z" />
+      <path d="M5 14 5.5 15.5 7 16l-1.5.5L5 18l-.5-1.5L3 16l1.5-.5Z" />
+    </>
+  ),
+  users: (
+    <>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </>
+  ),
+  workflow: (
+    <>
+      <rect x="3" y="3" width="6" height="6" rx="1" />
+      <rect x="15" y="3" width="6" height="6" rx="1" />
+      <rect x="9" y="15" width="6" height="6" rx="1" />
+      <path d="M6 9v2a3 3 0 0 0 3 3h3" />
+      <path d="M18 9v2a3 3 0 0 1-3 3h-3" />
     </>
   ),
   user: (

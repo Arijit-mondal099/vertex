@@ -91,6 +91,7 @@ export const COURSE_BY_SLUG_QUERY = defineQuery(/* groq */ `
     },
     "lessonCount": count(modules[].lessons[]),
     "totalMinutes": coalesce(math::sum(modules[].lessons[]->duration), 0),
+    "totalSeconds": coalesce(math::sum(modules[].lessons[]->duration), 0),
   }
 `)
 

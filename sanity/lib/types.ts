@@ -32,6 +32,16 @@ export interface LessonStub {
   title: string
   slug: string
   duration?: number
+  thumbnail?: SanityImage
+  freePreview?: boolean
+}
+
+export interface LearningOutcome {
+  _key: string
+  _type: string
+  icon: string
+  title: string
+  description: string
 }
 
 /** Card/list shape for catalog grids and search results. */
@@ -47,18 +57,30 @@ export interface CourseCard {
   moduleCount: number
   lessonCount: number
   totalMinutes: number
+  totalSeconds?: number
+  studentCount?: number
 }
 
 export interface ModuleWithLessons {
-  _id: string
+  _key: string
+  _id?: string
   title: string
+  summary?: string
   description?: string
   lessons: LessonStub[]
 }
 
 /** Full course page payload, modules in curriculum order. */
 export interface CourseDetail extends Omit<CourseCard, 'moduleCount' | 'lessonCount' | 'totalMinutes'> {
+  coverImage?: SanityImage
+  popular?: boolean
+  studentCount?: number
+  summary?: string
+  learningOutcomes?: LearningOutcome[]
   modules: ModuleWithLessons[]
+  lessonCount?: number
+  totalMinutes?: number
+  totalSeconds?: number
 }
 
 /** Lesson page payload, including the parent course for breadcrumbs. */
