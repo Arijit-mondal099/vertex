@@ -186,3 +186,56 @@ export const INSTRUCTORS_QUERY = defineQuery(/* groq */ `
     "courseCount": count(*[_type == "course" && references(^._id)]),
   }
 `)
+
+/** Search: fetch courses with full module/lesson hierarchy for in-memory scoring */
+export const SEARCH_COURSES_QUERY = defineQuery(/* groq */ `
+  *[_type == "course"] {
+    _id,
+    title,
+    "slug": slug.current,
+    level,
+    "modules": modules[] {
+      _key,
+      title,
+      "lessons": lessons[]-> {
+        _id,
+        title,
+        "slug": slug.current,
+        duration,
+        videoUrl,
+        thumbnail ${IMAGE_PROJECTION},
+        keyPoints,
+        "notesText": pt::text(notes),
+        freePreview,
+      }
+    }
+  }
+`)
+
+/** Search: fetch video docs (internal lookup) — never return whole chunks wholesale */
+export const SEARCH_VIDEOS_QUERY = defineQuery(/* groq */ `
+  *[_type == "video"] {
+    _id,
+    url,
+    videoId,
+    chapters,
+    // Never return full chunks array to model; caller filters
+    "chunkCount": count(chunks),
+    "sampleChunks": chunks[0..2] { startSeconds, text }
+  }
+`)
+
+/** All lessons enriched for search fallback (flat) */
+export const SEARCH_LESSONS_FLAT_QUERY = defineQuery(/* groq */ `
+  *[_type == "lesson"] {
+    _id,
+    title,
+    "slug": slug.current,
+    duration,
+    videoUrl,
+    thumbnail ${IMAGE_PROJECTION},
+    keyPoints,
+    "notesText": pt::text(notes),
+    freePreview,
+  }
+`)

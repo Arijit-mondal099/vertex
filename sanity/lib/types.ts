@@ -130,3 +130,47 @@ export interface Category extends CategorySummary {
 export interface Instructor extends InstructorSummary {
   courseCount: number
 }
+
+export interface VideoChapter { startSeconds: number; label: string }
+export interface VideoChunk { startSeconds: number; text: string }
+export interface VideoDoc {
+  _id: string
+  url: string
+  videoId: string
+  chapters?: VideoChapter[]
+  chunks?: VideoChunk[]
+}
+
+export type SearchResultKind = 'video' | 'lesson'
+
+export interface BaseSearchResult {
+  _id: string
+  kind: SearchResultKind
+  score: number
+  lesson: LessonStub & { videoUrl?: string; keyPoints?: string[]; notesText?: string }
+  course: { _id: string; title: string; slug: string }
+  moduleTitle: string
+  moduleIndex: number
+  lessonIndex: number
+  description: string
+}
+
+export interface VideoSearchResult extends BaseSearchResult {
+  kind: 'video'
+  startSeconds: number
+  chapterLabel?: string
+  clipLength?: number
+}
+
+export interface LessonSearchResult extends BaseSearchResult {
+  kind: 'lesson'
+}
+
+export type SearchResult = VideoSearchResult | LessonSearchResult
+
+export interface SearchResponse {
+  query: string
+  count: number
+  courseCount: number
+  results: SearchResult[]
+}
