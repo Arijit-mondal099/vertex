@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:build": "node sanity/seed/build-ndjson.mjs",
+    "seed:import": "sanity dataset import sanity/seed/seed.ndjson production --replace"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.8.2",

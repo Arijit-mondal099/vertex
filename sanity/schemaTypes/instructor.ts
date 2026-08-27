@@ -1,5 +1,5 @@
 import {UserIcon} from '@sanity/icons/User'
-import {defineField, defineType} from 'sanity'
+import {defineArrayMember, defineField, defineType} from 'sanity'
 
 export const instructor = defineType({
   name: 'instructor',
@@ -14,14 +14,29 @@ export const instructor = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {source: 'name'},
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: 'role',
-      title: 'Role',
+      title: 'Role (legacy)',
       type: 'string',
+      hidden: true,
       description: 'Job title shown under the name, e.g. "Staff Engineer"',
     }),
     defineField({
-      name: 'avatar',
-      title: 'Avatar',
+      name: 'expertise',
+      title: 'Expertise',
+      type: 'array',
+      validation: (rule) => rule.max(8),
+      of: [defineArrayMember({type: 'string'})],
+    }),
+    defineField({
+      name: 'photo',
+      title: 'Photo',
       type: 'image',
       options: {hotspot: true},
       fields: [
@@ -34,16 +49,31 @@ export const instructor = defineType({
       ],
     }),
     defineField({
+      name: 'avatar',
+      title: 'Avatar (legacy)',
+      type: 'image',
+      hidden: true,
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alternative text',
+          type: 'string',
+        }),
+      ],
+    }),
+    defineField({
       name: 'bio',
       title: 'Bio',
-      type: 'text',
+      type: 'array',
+      of: [defineArrayMember({type: 'block'})],
     }),
   ],
   preview: {
     select: {
       title: 'name',
       subtitle: 'role',
-      media: 'avatar',
+      media: 'photo',
     },
     prepare({title, subtitle, media}) {
       return {title, subtitle, media}
