@@ -119,6 +119,53 @@ export const LESSON_BY_SLUG_QUERY = defineQuery(/* groq */ `
   }
 `)
 
+/** Lesson page payload with full parent course and sibling modules/lessons for sidebar + prev/next. */
+export const LESSON_WITH_COURSE_QUERY = defineQuery(/* groq */ `
+  *[_type == "lesson" && slug.current == $lessonSlug][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    duration,
+    videoUrl,
+    thumbnail ${IMAGE_PROJECTION},
+    freePreview,
+    studentCount,
+    notes,
+    content,
+    keyPoints,
+    proTip,
+    resources,
+    "course": *[_type == "course" && references(^._id)][0] {
+      _id,
+      title,
+      "slug": slug.current,
+      level,
+      studentCount,
+      "modules": modules[] {
+        _key,
+        title,
+        "summary": coalesce(summary, description),
+        "lessons": lessons[]-> {
+          _id,
+          title,
+          "slug": slug.current,
+          duration,
+          thumbnail ${IMAGE_PROJECTION},
+          freePreview,
+        },
+      },
+    },
+  }
+`)
+
+/** All lesson slugs with parent course slugs for generateStaticParams. */
+export const ALL_LESSON_PARAMS_QUERY = defineQuery(/* groq */ `
+  *[_type == "course"] {
+    "slug": slug.current,
+    "lessons": modules[].lessons[]-> { "lessonSlug": slug.current }
+  }
+`)
+
 export const CATEGORIES_QUERY = defineQuery(/* groq */ `
   *[_type == "category"] | order(title asc) {
     _id,
