@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import { Icon } from "@/components/ui/icon";
 import { Logo } from "@/components/ui/logo";
+import { HomeSearchInput } from "@/components/search/home-search-input";
 import { getCourses } from "@/sanity/lib/data";
 
 export const metadata: Metadata = {
@@ -243,21 +244,7 @@ export default async function Home() {
               <Icon name="arrow-right" className="size-5" />
             </a>
           </div>
-          <div className="relative mx-auto mt-12 flex h-20 w-[87.5%] items-center rounded-2xl border border-[#f3eae5] bg-[#fdfcfb] shadow-[0_10px_28px_-12px_rgba(232,90,52,0.16)]">
-            <Icon
-              name="search"
-              className="pointer-events-none absolute left-7 size-6 text-neutral-400"
-            />
-            <input
-              type="search"
-              placeholder="Ask anything about your learning..."
-              aria-label="Search your learning"
-              className="h-full w-full rounded-2xl bg-transparent pl-[4.25rem] pr-6 text-[1.1875rem] text-neutral-900 outline-none placeholder:text-neutral-400 sm:pr-28"
-            />
-            <kbd className="absolute right-6 hidden h-9 items-center rounded-md border border-[#f1e8e0] bg-white px-3 text-body text-[#696973] sm:inline-flex">
-              ⌘ K
-            </kbd>
-          </div>
+          <HomeSearchInput />
         </section>
 
         {/* Hero / courses hairline */}
