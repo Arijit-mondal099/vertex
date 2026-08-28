@@ -7,8 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "seed:ingest": "node sanity/seed/ingest-videos.mjs",
     "seed:build": "node sanity/seed/build-ndjson.mjs",
-    "seed:import": "sanity dataset import sanity/seed/seed.ndjson production --replace"
+    "seed:import": "sanity dataset import sanity/seed/seed.ndjson production --replace",
+    "seed:import:videos": "sanity dataset import sanity/seed/videos.ndjson production --replace"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.8.2",
