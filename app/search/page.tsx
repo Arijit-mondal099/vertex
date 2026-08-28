@@ -18,14 +18,33 @@ function FooterBar({w,h}:{w:number;h:number}) {
   return <div className="bg-linear-to-b from-transparent via-[#fda98c] via-60% to-[#fdbea5]" style={{width:`${w}%`,height:`${h}%`}} />
 }
 
+const PAGE_SIZE = 5
+
+function buildPageHref(q: string, sort: string, page: number) {
+  const params = new URLSearchParams()
+  params.set('q', q)
+  params.set('sort', sort)
+  if (page > 1) params.set('page', String(page))
+  return `/search?${params.toString()}`
+}
+
+function pagesFor(page: number, total: number): Array<number | 'ellipsis'> {
+  if (total <= 6) return Array.from({length: total}, (_, i) => i + 1)
+  if (page <= 3) return [1, 2, 3, 'ellipsis', total]
+  if (page >= total - 2) return [1, 'ellipsis', total - 2, total - 1, total]
+  return [1, 'ellipsis', page, 'ellipsis', total]
+}
+
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{q?: string; sort?: string}>
+  searchParams: Promise<{q?: string; sort?: string; page?: string}>
 }) {
   const sp = await searchParams
   const q = (sp.q ?? '').trim().slice(0, 100)
   const sort = sp.sort === 'recent' ? 'recent' : 'relevance'
+  const rawPage = parseInt(sp.page ?? '1', 10)
+  const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1
 
   let data: Awaited<ReturnType<typeof performSearch>> | null = null
   if (q.length >= 2) {
@@ -35,6 +54,9 @@ export default async function SearchPage({
   const count = data?.count ?? 0
   const courseCount = data?.courseCount ?? 0
   const hasQuery = q.length >= 2
+  const totalPages = data ? Math.max(1, Math.ceil(data.results.length / PAGE_SIZE)) : 1
+  const currentPage = Math.min(page, totalPages)
+  const paginatedResults = data ? data.results.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE) : []
 
   return (
     <div className="flex-1 bg-[#fbf8f5] bg-[repeating-linear-gradient(45deg,transparent_0px,transparent_8.2px,#f3e9e1_8.2px,#f3e9e1_9.2px)]">
@@ -93,7 +115,45 @@ export default async function SearchPage({
               </Link>
             </div>
           ) : data ? (
-            <SearchResults results={data.results} query={data.query} count={count} courseCount={courseCount} />
+            <>
+              <SearchResults results={paginatedResults} query={data.query} count={count} courseCount={courseCount} />
+              {totalPages > 1 && (
+                <nav aria-label="Pagination" className="mt-6 flex items-center justify-center gap-1">
+                  <Link
+                    aria-label="Previous page"
+                    href={buildPageHref(q, sort, Math.max(1, currentPage - 1))}
+                    aria-disabled={currentPage <= 1}
+                    className={`inline-flex size-9 items-center justify-center rounded-md text-sm font-medium transition-colors ${currentPage <= 1 ? 'pointer-events-none text-neutral-300' : 'text-neutral-500 hover:text-neutral-900'}`}
+                  >
+                    <Icon name="chevron-left" className="size-4" />
+                  </Link>
+                  {pagesFor(currentPage, totalPages).map((p, i) =>
+                    p === 'ellipsis' ? (
+                      <span key={`e-${i}`} className="inline-flex size-9 items-center justify-center text-sm text-neutral-400">
+                        …
+                      </span>
+                    ) : (
+                      <Link
+                        key={p}
+                        href={buildPageHref(q, sort, p)}
+                        aria-current={p === currentPage ? 'page' : undefined}
+                        className={`inline-flex size-9 items-center justify-center rounded-md text-sm font-medium transition-colors ${p === currentPage ? 'border border-primary-500 bg-white text-primary-500' : 'text-neutral-700 hover:bg-neutral-100'}`}
+                      >
+                        {p}
+                      </Link>
+                    ),
+                  )}
+                  <Link
+                    aria-label="Next page"
+                    href={buildPageHref(q, sort, Math.min(totalPages, currentPage + 1))}
+                    aria-disabled={currentPage >= totalPages}
+                    className={`inline-flex size-9 items-center justify-center rounded-md text-sm font-medium transition-colors ${currentPage >= totalPages ? 'pointer-events-none text-neutral-300' : 'text-neutral-500 hover:text-neutral-900'}`}
+                  >
+                    <Icon name="chevron-right" className="size-4" />
+                  </Link>
+                </nav>
+              )}
+            </>
           ) : null}
         </section>
 
