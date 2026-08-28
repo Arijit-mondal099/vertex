@@ -9,9 +9,7 @@ export function SearchInput({initialQ}: {initialQ: string}) {
   const [q, setQ] = useState(initialQ)
   const [, startTransition] = useTransition()
 
-  // sync when server q changes (navigation) — do not reset on local edits
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQ(initialQ)
   }, [initialQ])
 
@@ -38,8 +36,11 @@ export function SearchInput({initialQ}: {initialQ: string}) {
   const hasValue = q.trim().length > 0
 
   return (
-    <form onSubmit={submit} className="relative flex h-20 w-full items-center rounded-2xl border border-[#f3eae5] bg-[#fdfcfb] shadow-[0_10px_28px_-12px_rgba(232,90,52,0.16)]">
-      <Icon name="search" className="pointer-events-none absolute left-7 size-6 text-neutral-400" />
+    <form
+      onSubmit={submit}
+      className="relative flex h-12 w-full items-center rounded-xl border border-[#ece8e6] bg-white shadow-[0_2px_10px_-4px_rgba(0,0,0,0.08)]"
+    >
+      <Icon name="search" className="pointer-events-none absolute left-4 size-5 text-[#9ca3af]" />
       <input
         id="vertex-search-input"
         type="text"
@@ -47,9 +48,9 @@ export function SearchInput({initialQ}: {initialQ: string}) {
         onChange={(e) => setQ(e.target.value)}
         placeholder="Ask anything about your learning..."
         aria-label="Search your learning"
-        className="h-full w-full rounded-2xl bg-transparent pl-[4.25rem] pr-4 text-[1.1875rem] text-neutral-900 outline-none placeholder:text-neutral-400 sm:pr-36 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+        className="h-full w-full rounded-xl bg-transparent pl-11 pr-24 text-[0.9375rem] text-neutral-900 outline-none placeholder:text-[#9ca3af]"
       />
-      <div className="absolute right-3 flex items-center gap-2">
+      <div className="absolute right-2 flex items-center gap-1.5">
         {hasValue ? (
           <>
             <button
@@ -59,19 +60,22 @@ export function SearchInput({initialQ}: {initialQ: string}) {
                 setQ('')
                 document.getElementById('vertex-search-input')?.focus()
               }}
-              className="flex size-8 items-center justify-center rounded-md text-[#6b7280] hover:bg-[#f3e8e1] hover:text-black"
+              className="flex size-7 items-center justify-center rounded-md text-[#9ca3af] hover:bg-[#f5ece6] hover:text-black"
             >
               ×
             </button>
             <button
               type="submit"
-              className="hidden h-9 items-center rounded-md bg-[#e66b50] px-4 text-sm font-medium text-white shadow-sm hover:bg-[#d95a3f] sm:inline-flex"
+              aria-label="Search"
+              className="flex size-7 items-center justify-center rounded-md bg-[#f5ece6] text-[#6b7280] hover:bg-[#f0dfd6]"
             >
-              Search
+              <Icon name="search" className="size-4" />
             </button>
           </>
         ) : (
-          <kbd className="hidden h-9 items-center rounded-md border border-[#f1e8e0] bg-white px-3 text-body text-[#696973] sm:inline-flex">⌘ K</kbd>
+          <kbd className="hidden h-7 items-center gap-1 rounded-md border border-[#ece8e6] bg-[#fbf8f5] px-2 text-[11px] font-medium leading-none text-[#9ca3af] sm:inline-flex">
+            <span>⌘</span> K
+          </kbd>
         )}
       </div>
     </form>
